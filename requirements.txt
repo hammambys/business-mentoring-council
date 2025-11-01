@@ -3,3 +3,4 @@ langgraph
 streamlit
 huggingface_hub
 python-dotenv
+GROQ_API_KEY=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
