@@ -1,13 +1,42 @@
 import streamlit as st
 from council import run_council
 
-st.title("🤝 AI Advisor Council")
+st.title("🤝 Business Advisor Council")
 st.set_page_config(layout="wide")
 st.write("Enter your business idea and get advice from The Strategist, The Technologist, and The Marketer.")
 
 business_idea = st.text_area("💡 Your business idea", placeholder="E.g. An AI tool that helps remote teams manage productivity.",
                              value="social media app that connects pet owners based on their pets' interests and activities.")
 
+colors = {
+    "Great opportunity": "green",
+    "Needs improvement": "orange",
+    "Not worth the risk": "red",
+    "Easy": "green",
+    "Challenging": "orange",
+    "Impossible": "red",
+    "Legal": "green",
+    "Risky": "orange",
+    "Illegal": "red",
+}
+
+def extract_sections(text: str) -> dict:
+    sections = {}
+    current_section = None
+    for line in text.splitlines():
+        line = line.strip()
+        if line.startswith("Verdict:"):
+            current_section = "verdict"
+            sections[current_section] = line[len("Verdict:"):].strip()
+        elif line.startswith("Reasoning:"):
+            current_section = "reasoning"
+            sections[current_section] = line[len("Reasoning:"):].strip()
+        elif line.startswith("Suggestions:"):
+            current_section = "suggestions"
+            sections[current_section] = line[len("Suggestions:"):].strip()
+        elif current_section:
+            sections[current_section] += line + "\n"
+    return sections
 
 if st.button("Get Council Advice"):
     if not business_idea.strip():
@@ -15,37 +44,69 @@ if st.button("Get Council Advice"):
     else:
         with st.spinner("The Council is discussing your idea..."):
             results = run_council(business_idea)
-                
         st.success("✅ The Council has provided advice!")
 
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3 = st.columns(3,gap="medium")
 
         with col1:
-            verdict_line = ""
-            reasoning_line = ""
-            for line in results["Strategist"].splitlines():
-                if line.lower().startswith("verdict:"):
-                    verdict_line = line.split(":", 1)[1].strip()
-                elif line.lower().startswith("reasoning:"):
-                    reasoning_line = line.split(":", 1)[1].strip()
+            sections = extract_sections(results["Strategist"])
+            verdict_part = sections.get("verdict", "").splitlines()
+            reasoning_part = sections.get("reasoning", "").splitlines()
+            suggestions_part = sections.get("suggestions", "").splitlines()
+            verdict = "".join(verdict_part)
+            resoning = "\n".join(reasoning_part)
+            suggestions = "\n".join(suggestions_part)
 
-            # Set color based on verdict
-            color = "gray"
-            if "great" in verdict_line.lower():
-                color = "green"
-            elif "improvement" in verdict_line.lower():
-                color = "orange"
-            elif "risk" in verdict_line.lower():
-                color = "red"
+            color = colors.get(verdict.strip(), "black")
 
-            st.subheader("🧠 Strategist")
-            st.write(f"<span style='color:{color};font-weight:bold;'>{verdict_line}</span>", unsafe_allow_html=True)
-            st.write(f"Reasoning: {reasoning_line}")
+            st.subheader("🧠 The Strategist")
+            st.write("Feedback from The Strategist:")
+            st.write(f"<span style='color:{color};font-weight:bold;'>{verdict}</span>", unsafe_allow_html=True)
+            if reasoning_part:
+                st.write("Reasoning:")
+                st.write(f"{resoning}")
+            if suggestions_part:
+                st.write("Suggestions:")
+                st.write(f"{suggestions}")
 
         with col2:
-            st.subheader("💻 Technologist")
-            st.write(results["Technologist"])
+            sections_tech = extract_sections(results["Technologist"])
+            verdict_part = sections_tech.get("verdict", "").splitlines()
+            reasoning_part = sections_tech.get("reasoning", "").splitlines()
+            suggestions_part = sections_tech.get("suggestions", "").splitlines()
+            verdict = "".join(verdict_part)
+            reasoning = "\n".join(reasoning_part)
+            suggestions = "\n".join(suggestions_part)
+            
+            color = colors.get(verdict.strip(), "black")
+            
+            st.subheader("💻 The Technologist")
+            st.write("Feedback from The Technologist:")
+            st.write(f"<span style='color:{color};font-weight:bold;'>{verdict}</span>", unsafe_allow_html=True)
+            if reasoning_part:
+                st.write("Reasoning:")
+                st.write(f"{reasoning}")
+            if suggestions_part:
+                st.write("Suggestions:")
+                st.write(f"{suggestions}")
         
         with col3:
-            st.subheader("📣 Marketer")
-            st.write(results["Marketer"])
+            sections_tech = extract_sections(results["Lawyer"])
+            verdict_part = sections_tech.get("verdict", "").splitlines()
+            reasoning_part = sections_tech.get("reasoning", "").splitlines()
+            suggestions_part = sections_tech.get("suggestions", "").splitlines()
+            verdict = "".join(verdict_part)
+            reasoning = "\n".join(reasoning_part)
+            suggestions = "\n".join(suggestions_part)
+
+            color = colors.get(verdict.strip(), "black")
+
+            st.subheader("⚖️ The Lawyer")
+            st.write("Feedback from The Lawyer:")
+            st.write(f"<span style='color:{color};font-weight:bold;'>{verdict}</span>", unsafe_allow_html=True)
+            if reasoning_part:
+                st.write("Reasoning:")
+                st.write(f"{reasoning}")
+            if suggestions_part:
+                st.write("Suggestions:")
+                st.write(f"{suggestions}")
