@@ -11,16 +11,35 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 llm = ChatGroq(
     model="llama-3.3-70b-versatile",  # example Groq model
     groq_api_key=GROQ_API_KEY,
-    temperature=0.7
+    temperature=0.2
 )
 
 def get_strategist_advice(business_idea: str) -> str:
+    """
+    Evaluates a business idea from the Strategist's perspective.
+    Returns one of: Great opportunity / Needs improvement / Not worth the risk
+    with a clear justification.
+    """
     prompt = PromptTemplate.from_template(
-        "You are The Strategist — a business expert. Analyze this business idea: {idea}. "
-        "Provide advice on business model viability, risks, and opportunities."
-        "Answer in a concise manner. Don't repeat the idea."
-        "Provide actionable insights and get into details other than your expertise."
-        "Be specific and avoid generic statements."
+        """
+        You are The Strategist — a seasoned business advisor who is highly rational and critical.
+        Evaluate the following business idea strictly from a strategic and market viability perspective.
+
+        Business idea:
+        {idea}
+
+        Your output must follow this exact format:
+
+        Verdict: [Great opportunity | Needs improvement | Not worth the risk]
+        Reasoning: [1-3 concise sentences that justify your verdict clearly and critically.]
+
+        Be objective and deterministic — avoid vague optimism or indecision.
+
+        Verdict rules:
+            - Great opportunity → high market demand, clear monetization, competitive moat.
+            - Needs improvement → partial potential, missing differentiation or unclear value.
+            - Not worth the risk → weak demand, poor scalability, or fundamental flaw.
+        """
     )
     response = llm.invoke(prompt.format(idea=business_idea))
     return response.content
@@ -32,8 +51,8 @@ def get_technologist_advice(business_idea: str) -> str:
         "Answer in a concise manner. Don't repeat the idea."
         "Provide actionable insights and get into details other than your expertise."
         "Be specific and avoid generic statements."
-    )'''
-    #return llm.invoke(prompt.format(idea=business_idea))
+    )
+    #return llm.invoke(prompt.format(idea=business_idea))'''
     return "Technology advice functionality is currently under development."
 
 def get_marketer_advice(business_idea: str) -> str:
@@ -43,6 +62,6 @@ def get_marketer_advice(business_idea: str) -> str:
         "Answer in a concise manner. Don't repeat the idea."
         "Provide actionable insights and get into details other than your expertise."
         "Be specific and avoid generic statements."
-    )'''
-    #return llm.invoke(prompt.format(idea=business_idea))
+    )
+    #return llm.invoke(prompt.format(idea=business_idea))'''
     return "Marketing advice functionality is currently under development."
