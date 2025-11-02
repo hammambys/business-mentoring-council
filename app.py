@@ -5,8 +5,7 @@ st.title("🤝 Business Advisor Council")
 st.set_page_config(layout="wide")
 st.write("Enter your business idea and get advice from The Strategist, The Technologist, and The Marketer.")
 
-business_idea = st.text_area("💡 Your business idea", placeholder="E.g. An AI tool that helps remote teams manage productivity.",
-                             value="social media app that connects pet owners based on their pets' interests and activities.")
+business_idea = st.text_area("💡 Your business idea", placeholder="E.g. An AI tool that helps remote teams manage productivity.")
 
 colors = {
     "Great opportunity": "green",
