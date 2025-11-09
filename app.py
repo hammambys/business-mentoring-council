@@ -3,7 +3,7 @@ from council import run_council
 
 st.title("🤝 Business Advisor Council")
 st.set_page_config(layout="wide")
-st.write("Enter your business idea and get advice from The Strategist, The Technologist, and The Marketer.")
+st.write("Enter your business idea and get advice from The Strategist, The Technologist, and The Lawyer.")
 
 business_idea = st.text_area("💡 Your business idea", placeholder="E.g. An AI tool that helps remote teams manage productivity.")
 
