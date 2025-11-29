@@ -2,19 +2,17 @@ import streamlit as st
 from council import run_council
 import streamlit.components.v1 as components
 
-GA_MEASUREMENT_ID = "G-7W0FQ0HYY2"
-
 
 def enable_google_analytics():
     ga_code = f"""
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={GA_MEASUREMENT_ID}"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){{dataLayer.push(arguments);}}
-      gtag('js', new Date());
-      gtag('config', '{GA_MEASUREMENT_ID}');
-    </script>
+   <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7W0FQ0HYY2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){{{{dataLayer.push(arguments);}}}}
+  gtag('js', new Date());
+  gtag('config', 'G-7W0FQ0HYY2');
+</script>
     """
     components.html(ga_code, height=0)
 
@@ -23,9 +21,7 @@ enable_google_analytics()
 
 st.title("🤝 Business Advisor Council")
 st.set_page_config(layout="wide")
-st.write(
-    "Enter your business idea and get advice from The Strategist, The Technologist, and The Lawyer."
-)
+st.write("Enter your business idea and get advice from our specialists.")
 
 business_idea = st.text_area(
     "💡 Your business idea",
