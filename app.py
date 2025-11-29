@@ -1,11 +1,36 @@
 import streamlit as st
 from council import run_council
+import streamlit.components.v1 as components
+
+GA_MEASUREMENT_ID = "G-7W0FQ0HYY2"
+
+
+def enable_google_analytics():
+    ga_code = f"""
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={GA_MEASUREMENT_ID}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){{dataLayer.push(arguments);}}
+      gtag('js', new Date());
+      gtag('config', '{GA_MEASUREMENT_ID}');
+    </script>
+    """
+    components.html(ga_code, height=0)
+
+
+enable_google_analytics()
 
 st.title("🤝 Business Advisor Council")
 st.set_page_config(layout="wide")
-st.write("Enter your business idea and get advice from The Strategist, The Technologist, and The Lawyer.")
+st.write(
+    "Enter your business idea and get advice from The Strategist, The Technologist, and The Lawyer."
+)
 
-business_idea = st.text_area("💡 Your business idea", placeholder="E.g. An AI tool that helps remote teams manage productivity.")
+business_idea = st.text_area(
+    "💡 Your business idea",
+    placeholder="E.g. An AI tool that helps remote teams manage productivity.",
+)
 
 colors = {
     "Great opportunity": "green",
@@ -19,6 +44,7 @@ colors = {
     "Illegal": "red",
 }
 
+
 def extract_sections(text: str) -> dict:
     sections = {}
     current_section = None
@@ -26,16 +52,17 @@ def extract_sections(text: str) -> dict:
         line = line.strip()
         if line.startswith("Verdict:"):
             current_section = "verdict"
-            sections[current_section] = line[len("Verdict:"):].strip()
+            sections[current_section] = line[len("Verdict:") :].strip()
         elif line.startswith("Reasoning:"):
             current_section = "reasoning"
-            sections[current_section] = line[len("Reasoning:"):].strip()
+            sections[current_section] = line[len("Reasoning:") :].strip()
         elif line.startswith("Suggestions:"):
             current_section = "suggestions"
-            sections[current_section] = line[len("Suggestions:"):].strip()
+            sections[current_section] = line[len("Suggestions:") :].strip()
         elif current_section:
             sections[current_section] += line + "\n"
     return sections
+
 
 if st.button("Get Council Advice"):
     if not business_idea.strip():
@@ -45,7 +72,7 @@ if st.button("Get Council Advice"):
             results = run_council(business_idea)
         st.success("✅ The Council has provided advice!")
 
-        col1, col2, col3 = st.columns(3,gap="medium")
+        col1, col2, col3 = st.columns(3, gap="medium")
 
         with col1:
             sections = extract_sections(results["Strategist"])
@@ -60,7 +87,10 @@ if st.button("Get Council Advice"):
 
             st.subheader("🧠 The Strategist")
             st.write("Feedback from The Strategist:")
-            st.write(f"<span style='color:{color};font-weight:bold;'>{verdict}</span>", unsafe_allow_html=True)
+            st.write(
+                f"<span style='color:{color};font-weight:bold;'>{verdict}</span>",
+                unsafe_allow_html=True,
+            )
             if reasoning_part:
                 st.write("Reasoning:")
                 st.write(f"{resoning}")
@@ -76,19 +106,22 @@ if st.button("Get Council Advice"):
             verdict = "".join(verdict_part)
             reasoning = "\n".join(reasoning_part)
             suggestions = "\n".join(suggestions_part)
-            
+
             color = colors.get(verdict.strip(), "black")
-            
+
             st.subheader("💻 The Technologist")
             st.write("Feedback from The Technologist:")
-            st.write(f"<span style='color:{color};font-weight:bold;'>{verdict}</span>", unsafe_allow_html=True)
+            st.write(
+                f"<span style='color:{color};font-weight:bold;'>{verdict}</span>",
+                unsafe_allow_html=True,
+            )
             if reasoning_part:
                 st.write("Reasoning:")
                 st.write(f"{reasoning}")
             if suggestions_part:
                 st.write("Suggestions:")
                 st.write(f"{suggestions}")
-        
+
         with col3:
             sections_tech = extract_sections(results["Lawyer"])
             verdict_part = sections_tech.get("verdict", "").splitlines()
@@ -102,7 +135,10 @@ if st.button("Get Council Advice"):
 
             st.subheader("⚖️ The Lawyer")
             st.write("Feedback from The Lawyer:")
-            st.write(f"<span style='color:{color};font-weight:bold;'>{verdict}</span>", unsafe_allow_html=True)
+            st.write(
+                f"<span style='color:{color};font-weight:bold;'>{verdict}</span>",
+                unsafe_allow_html=True,
+            )
             if reasoning_part:
                 st.write("Reasoning:")
                 st.write(f"{reasoning}")
